@@ -110,7 +110,7 @@ const ScrumBoard = () => {
                                                 type="checkbox"
                                                 checked={task.status === "To Do"}
                                                 onChange={() => updateTaskStatus(task.id, "To Do")}
-                                                style={{ accentColor: currentTheme.accentColor }}
+                                                style={{ accentColor: currentTheme.accentColor, height:'20px', width: ' 20px' }}
                                             />
                                         </td>
                                         <td className="text-center">
@@ -118,7 +118,7 @@ const ScrumBoard = () => {
                                                 type="checkbox"
                                                 checked={task.status === "Doing"}
                                                 onChange={() => updateTaskStatus(task.id, "Doing")}
-                                                style={{ accentColor: currentTheme.accentColor }}
+                                                style={{ accentColor: currentTheme.accentColor, height:'20px', width: ' 20px' }}
                                             />
                                         </td>
                                         <td className="text-center">
@@ -126,7 +126,7 @@ const ScrumBoard = () => {
                                                 type="checkbox"
                                                 checked={task.status === "Done"}
                                                 onChange={() => updateTaskStatus(task.id, "Done")}
-                                                style={{ accentColor: currentTheme.accentColor }}
+                                                style={{ accentColor: currentTheme.accentColor, height:'20px', width: ' 20px' }}
                                             />
                                         </td>
                                         <td className="text-center">
@@ -134,7 +134,7 @@ const ScrumBoard = () => {
                                                 type="checkbox"
                                                 checked={task.status === "Issue Happened"}
                                                 onChange={() => updateTaskStatus(task.id, "Issue Happened")}
-                                                style={{ accentColor: currentTheme.accentColor }}
+                                                style={{ accentColor: currentTheme.accentColor, height:'20px', width: ' 20px' }}
                                             />
                                         </td>
                                     </tr>
