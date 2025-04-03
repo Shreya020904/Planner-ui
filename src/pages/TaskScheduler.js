@@ -69,7 +69,7 @@ const TaskScheduler = () => {
     return (
         <div className="task-container" style={{ backgroundColor: currentTheme.background, color: currentTheme.text, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Header toggleSidebar={toggleSidebar} />
-            <div className="task-content d-flex" style={{ backgroundColor: currentTheme.background, flexGrow: 1, marginLeft:'20px' }}>
+            <div className="task-content d-flex" style={{ backgroundColor: currentTheme.background, flexGrow: 1, marginLeft:'20px', marginTop:'100px' }}>
                 <Sidebar isOpen={sidebarOpen} />
                 <main className="task-main p-4 flex-grow-1" style={{
                     backgroundColor: currentTheme.background,
