@@ -1,0 +1,59 @@
+.task-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #121212; /* Dark background */
+  color: #ffffff; /* White text */
+}
+
+.task-content {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.task-main {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #1a1a1a; /* Slightly lighter dark shade */
+  border-radius: 10px;
+  margin: 20px;
+  margin-left: 250px; /* Adjust this to match sidebar width */
+}
+
+.task-main h2 {
+  color: #00ff00; /* Green accent */
+}
+
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+}
+
+.task-form input,
+.task-form select,
+.task-form button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+}
+
+.task-form input,
+.task-form select {
+  background-color: #2b2b2b;
+  color: #ffffff;
+}
+
+.task-form button {
+  background-color: #00ff00;
+  color: #000000;
+  cursor: pointer;
+}
+
+.task-form button:hover {
+  background-color: #00cc00;
+}
+  

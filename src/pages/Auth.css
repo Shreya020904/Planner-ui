@@ -1,0 +1,90 @@
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(10, 10, 10, 0.9);
+  }
+  
+  .auth-box {
+    position: relative;
+    width: 350px;
+    padding: 30px;
+    background-color: rgba(30, 30, 30, 0.8);
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 255, 0, 0.3);
+  }
+  
+  .slider-container {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  
+  .slider-container button {
+    flex: 1;
+    padding: 10px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .slider {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    height: 3px;
+    background-color: limegreen;
+    transition: transform 0.3s ease;
+  }
+  
+  .slider.signup {
+    transform: translateX(100%);
+  }
+  
+  .slider.login {
+    transform: translateX(0);
+  }
+  
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-container input {
+    margin: 10px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  
+  .form-container button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: limegreen;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+  }
+  
+  .form-container button:hover {
+    background-color: darkgreen;
+  }
+
+  .heading{
+    color: white;
+  }
+  
