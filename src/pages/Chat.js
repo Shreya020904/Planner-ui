@@ -6,7 +6,7 @@ import Header from "../components/Header";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, InputGroup, Form, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'react-bootstrap';
 import { Send, User } from 'lucide-react';
-import { ThemeContext } from '../ThemeContext'; // Import ThemeContext
+import { ThemeContext } from '../ThemeContext';
 import { motion } from 'framer-motion';
 
 const Chat = () => {
@@ -19,7 +19,11 @@ const Chat = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [pinnedContacts, setPinnedContacts] = useState([]);
     const [dropdownOpenUid, setDropdownOpenUid] = useState(null);
-    const { theme } = useContext(ThemeContext); // Consume ThemeContext
+    const { theme } = useContext(ThemeContext);
+    const aiUser = {
+        uid: "ai-bot",
+        username: "AI Assistant",
+    };
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -30,12 +34,9 @@ const Chat = () => {
                     ...doc.data(),
                 }));
 
-                const aiUser = {
-                    uid: "ai-bot",
-                    username: "AI Assistant",
-                };
-
-                usersList.push(aiUser);
+                // Remove AI User from its original place if it exists.
+                usersList = usersList.filter(user => user.uid !== "ai-bot");
+                usersList.unshift(aiUser); // Add AI User to the beginning.
                 setUsers(usersList);
             } catch (error) {
                 console.error("Error fetching users: ", error);
@@ -60,6 +61,11 @@ const Chat = () => {
         if (!pinnedContacts.some((pinned) => pinned.uid === user.uid)) {
             setPinnedContacts([...pinnedContacts, user]);
         }
+        setDropdownOpenUid(null);
+    };
+
+    const unpinContact = (userUid) => {
+        setPinnedContacts(pinnedContacts.filter(contact => contact.uid !== userUid));
         setDropdownOpenUid(null);
     };
 
@@ -157,7 +163,7 @@ const Chat = () => {
     const lightPurple = theme === 'dark' ? 'rgba(138, 43, 226, 0.5)' : '#f0d9ff';
     const lightCream = theme === 'dark' ? '#444' : '#f5e6d9';
     const purple = theme === 'dark' ? '#a78bfa' : '#8a2be2';
-    const lightDark = theme === 'dark' ? '#ccc' : '#f5e6d9'; // For active username in dark mode
+    const lightDark = theme === 'dark' ? '#ccc' : '#f5e6d9';
     const border = theme === 'dark' ? '1px solid #333' : '1px solid #d3d3d3';
     const inputBackground = theme === 'dark' ? '#1a1a1a' : '#ffffff';
     const inputBorder = theme === 'dark' ? '1px solid #555' : '1px solid rgb(229, 237, 214)';
@@ -167,11 +173,11 @@ const Chat = () => {
     const activeUsernameUnderline = purple;
 
     // New NavItem Component
-    const NavItem = ({ user, active, onClick }) => {
+    const NavItem = ({ user, active, onClick, isPinned }) => {
         const [isHovered, setIsHovered] = useState(false);
         const currentTextColor = active ? (theme === 'dark' ? '#d6adff' : 'rgb(112, 36, 131)') : textColor;
-        const currentBackgroundColor = active ? (theme === 'dark' ? '#333' : '#f0d9ff') : 'transparent';
-    
+        const currentBackgroundColor = active ? (theme === 'dark' ? '#333' : '#f5e6d9') : 'transparent';
+
         return (
             <motion.li
                 className="nav-item"
@@ -184,7 +190,7 @@ const Chat = () => {
                 whileHover={{
                     backgroundColor: isHovered ? (theme === 'dark' ? '#222' : '#d8b4fe') : 'transparent',
                     scale: isHovered ? 1.05 : 1,
-                    
+
                 }}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -209,17 +215,29 @@ const Chat = () => {
                             {user.username}
                         </span>
                     </div>
-                    <Dropdown>
-                        <DropdownToggle variant="link" as="span" onClick={(e) => { e.stopPropagation(); toggleDropdown(user.uid); }} style={{ cursor: 'pointer', color: purple }}>⋮</DropdownToggle>
-                        <DropdownMenu show={dropdownOpenUid === user.uid} style={{ backgroundColor: inputBackground, border: border, color: textColor }}>
-                            <DropdownItem onClick={(e) => { e.stopPropagation(); pinContact(user); }} style={{ color: textColor, cursor: 'pointer', backgroundColor: 'transparent', ':hover': { backgroundColor: lightPurple } }}>📌 Pin Contact</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
+                    {user.uid !== "ai-bot" && (  // IMPORTANT:  Don't show dropdown for AI Assistant
+                        <Dropdown>
+                            <DropdownToggle variant="link" as="span" onClick={(e) => { e.stopPropagation(); toggleDropdown(user.uid); }} style={{ cursor: 'pointer', color: purple }}>
+                                {isPinned ? '📌' : '⋮'}
+                            </DropdownToggle>
+                            <DropdownMenu show={dropdownOpenUid === user.uid} style={{ backgroundColor: inputBackground, border: border, color: textColor }}>
+                                {isPinned ? (
+                                    <DropdownItem onClick={(e) => { e.stopPropagation(); unpinContact(user.uid); }} style={{ color: textColor, cursor: 'pointer', backgroundColor: 'transparent', ':hover': { backgroundColor: lightPurple } }}>
+                                        📍 Unpin Contact
+                                    </DropdownItem>
+                                ) : (
+                                    <DropdownItem onClick={(e) => { e.stopPropagation(); pinContact(user); }} style={{ color: textColor, cursor: 'pointer', backgroundColor: 'transparent', ':hover': { backgroundColor: lightPurple } }}>
+                                        📌 Pin Contact
+                                    </DropdownItem>
+                                )}
+                            </DropdownMenu>
+                        </Dropdown>
+                    )}
                 </div>
             </motion.li>
         );
     };
-    
+
 
     return (
         <div className="d-flex h-100" style={{ backgroundColor: backgroundColor, color: textColor }}>
@@ -241,10 +259,11 @@ const Chat = () => {
                     style={{
                         backgroundColor: lightPurple,
                         width: '300px',
-                        borderRight:'3px #8a2be2',
+                        borderRight: '2px solid #8a2be2',
+                        borderLeft: '2px solid #8a2be2',
                         overflowY: 'auto',
                         position: 'fixed',
-                        top: '78px', // Adjust for header height
+                        top: '78px',
                         marginLeft: sidebarOpen ? '300px' : '0',
                         height: 'calc(100vh - 78px)',
                         zIndex: 1000,
@@ -252,7 +271,7 @@ const Chat = () => {
                         transform: 'translateX(0)',
                     }}
                 >
-                    <h2 className="p-3" style={{ margin: 0, color: textColor, }}>Contacts</h2>
+                    <h2 className="p-3" style={{ margin: 0, color: textColor, borderBottom: '1px solid #8a2be2', boxShadow: '0px -4px 8px rgba(138, 43, 226, 0.6)' }}>Contacts</h2>
                     <Form.Control
                         type="text"
                         placeholder="Search contacts..."
@@ -262,23 +281,28 @@ const Chat = () => {
                         style={{ backgroundColor: inputBackground, border: border, color: textColor, width: 'calc(100% - 30px)' }}
                     />
                     <ul className="list-unstyled" style={{ margin: 0, padding: 0 }}>
-                        {pinnedContacts.length > 0 && (
-                            <>
-                                <li className="p-3" style={{ fontWeight: 'bold', color: textColor, }}>Pinned Contacts</li>
-                                {pinnedContacts.map((user) => (
-                                    <NavItem
-                                        key={user.uid}
-                                        user={user}
-                                        active={selectedUser?.uid === user.uid}
-                                        onClick={() => setSelectedUser(user)}
-
-                                    />
-                                ))}
-                            </>
-                        )}
-                        <li className="p-3" style={{ fontWeight: 'bold', color: textColor }}>Contacts</li>
+                        {/* Render AI Assistant first */}
+                        <NavItem
+                            key={aiUser.uid}
+                            user={aiUser}
+                            active={selectedUser?.uid === aiUser.uid}
+                            onClick={() => setSelectedUser(aiUser)}
+                            isPinned={true} // AI Assistant is always treated as pinned.
+                        />
+                        {pinnedContacts
+                            .filter(contact => contact.uid !== "ai-bot") // Exclude AI user from pinned.
+                            .map((user) => (
+                                <NavItem
+                                    key={user.uid}
+                                    user={user}
+                                    active={selectedUser?.uid === user.uid}
+                                    onClick={() => setSelectedUser(user)}
+                                    isPinned={true}
+                                />
+                            ))}
                         {users
                             .filter((user) => user.uid !== currentUser?.uid)
+                            .filter((user) => user.uid !== "ai-bot")
                             .filter((user) => !pinnedContacts.some(pinned => pinned.uid === user.uid))
                             .filter((user) => user.username.toLowerCase().includes(searchQuery.toLowerCase()))
                             .map((user) => (
@@ -287,6 +311,7 @@ const Chat = () => {
                                     user={user}
                                     active={selectedUser?.uid === user.uid}
                                     onClick={() => setSelectedUser(user)}
+                                    isPinned={false}
                                 />
                             ))}
                     </ul>
@@ -301,7 +326,7 @@ const Chat = () => {
                         flexDirection: 'column',
                         overflowY: 'hidden',
                         backgroundColor: backgroundColor,
-                        marginLeft: sidebarOpen ? '590px' : '300px', // Keep this fixed for the chat sidebar
+                        marginLeft: sidebarOpen ? '590px' : '300px',
                         transition: 'margin-left 0.3s ease-in-out',
                         marginTop: '78px',
                         height: 'calc(100vh - 78px)',
